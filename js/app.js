@@ -115,19 +115,46 @@ function go(path, e) {
 }
 
 /* ——— Layout ——— */
+function closeNav() {
+  document.body.classList.remove("nav-open");
+  const toggle = document.getElementById("nav-toggle");
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Apri il menu");
+  }
+}
+
 function navbar() {
+  const links = el("div", { class: "nav-links", id: "nav-links" },
+    el("a", { href: "#/products", onclick: (e) => go("/products", e) }, "Composti"),
+    el("a", { href: "#/", onclick: (e) => { e.preventDefault(); goHomeSection("categories"); } }, "Protocolli"),
+    el("a", { href: "#/certificati", onclick: (e) => go("/certificati", e) }, "Certificati"),
+    el("a", { href: "#/", onclick: (e) => { e.preventDefault(); goHomeSection("about"); } }, "Contatti")
+  );
+  links.querySelectorAll("a").forEach(a => a.addEventListener("click", closeNav));
+
+  const toggle = el("button", {
+    class: "nav-toggle",
+    id: "nav-toggle",
+    type: "button",
+    "aria-label": "Apri il menu",
+    "aria-expanded": "false",
+    "aria-controls": "nav-links",
+    onclick: () => {
+      const open = document.body.classList.toggle("nav-open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Chiudi il menu" : "Apri il menu");
+    }
+  }, el("span"), el("span"), el("span"));
+
   return el("header", { class: "nav", id: "nav" },
     el("div", { class: "nav-inner" },
-      el("a", { class: "brand", href: "#/", onclick: (e) => go("/", e) },
+      el("a", { class: "brand", href: "#/", onclick: (e) => { closeNav(); go("/", e); } },
         el("span", { class: "name" }, "PeptidesValtellina"),
         el("span", { class: "tag" }, "/ lab")
       ),
-      el("div", { class: "nav-links" },
-        el("a", { href: "#/products", onclick: (e) => go("/products", e) }, "Composti"),
-        el("a", { href: "#/", onclick: (e) => { e.preventDefault(); goHomeSection("categories"); } }, "Protocolli"),
-        el("a", { href: "#/certificati", onclick: (e) => go("/certificati", e) }, "Certificati"),
-        el("a", { href: "#/", onclick: (e) => { e.preventDefault(); goHomeSection("about"); } }, "Contatti")
-      )
+      toggle,
+      links
     )
   );
 }
@@ -224,6 +251,7 @@ function footer() {
 }
 
 function wrapPage(...parts) {
+  closeNav();
   const app = $("#app");
   app.innerHTML = "";
   const shell = el("div", { class: "page-enter" });
@@ -469,7 +497,7 @@ function detailView(slug) {
       ),
       el("div", { class: "btns" },
         el("a", { href: p.coa_url, target: "_blank", rel: "noopener" }, fileCheck(), " Vedi COA"),
-        el("a", { href: JANOSHIK_VERIFY, target: "_blank", rel: "noopener" }, " Verifica chiave")
+        el("a", { href: "#/certificati", onclick: (e) => go("/certificati", e) }, " Verifica chiave")
       ),
       el("p", { class: "note" }, shield(), ` Verificato Janoshik · chiave ${p.coa_key}`)
     )
