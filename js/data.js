@@ -1,5 +1,5 @@
 /* PeptidesValtellina — dati del sito */
-const CONTACT_EMAIL = "studiosb.group@gmail.com";
+const CONTACT_EMAIL = "info@peptidesvaltellina.it";
 const CONTACT_PHONE = "+39 351 2486 387";
 const CONTACT_PHONE_TEL = "+393512486387";
 const WHATSAPP_NUMBER = "393512486387";
